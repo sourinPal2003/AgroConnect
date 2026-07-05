@@ -1,10 +1,32 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
-import "../App.css";
+
+import {
+    FaLeaf,
+    FaUser,
+    FaEnvelope,
+    FaPhone,
+    FaMapMarkerAlt,
+    FaLock,
+    FaEye,
+    FaEyeSlash,
+    FaUserTag,
+    FaIdCard,
+    FaIndustry,
+    FaMapPin
+} from "react-icons/fa";
+
+import "./Register.css";
 
 export default function Register() {
+
+    const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
+
+    const [showPassword, setShowPassword] = useState(false);
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -16,146 +38,392 @@ export default function Register() {
         millName: "",
         millLocation: ""
     });
-    const [error, setError] = useState("");
+
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-    const { login } = useContext(AuthContext);
+    const [error, setError] = useState("");
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
-        setError("");
+
         setLoading(true);
+        setError("");
 
         try {
+
             const response = await registerUser(formData);
+
             login(response.data.user, response.data.token);
+
             navigate("/dashboard");
+
         } catch (err) {
-            setError(err.response?.data?.error || "Registration failed");
+
+            setError(
+                err.response?.data?.error ||
+                "Registration Failed"
+            );
+
         } finally {
+
             setLoading(false);
+
         }
+
     };
 
     return (
-        <div className="auth-container">
-            <div className="auth-box">
-                <h2>Register</h2>
-                {error && <div className="error-message">{error}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>Name:</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
 
-                    <div className="form-group">
-                        <label>Email:</label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+        <div className="register-page">
 
-                    <div className="form-group">
-                        <label>Phone:</label>
-                        <input
-                            type="tel"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+            {/* LEFT PANEL */}
 
-                    <div className="form-group">
-                        <label>Address:</label>
-                        <input
-                            type="text"
-                            name="address"
-                            value={formData.address}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+            <div className="left-panel">
 
-                    <div className="form-group">
-                        <label>Password:</label>
-                        <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                <div className="brand">
 
-                    <div className="form-group">
-                        <label>Role:</label>
-                        <select name="role" value={formData.role} onChange={handleChange}>
-                            <option value="farmer">Farmer</option>
-                            <option value="mill_owner">Mill Owner</option>
-                            <option value="inspector">Inspector</option>
-                        </select>
-                    </div>
+                    <FaLeaf className="brand-icon"/>
 
-                    {formData.role === "mill_owner" && (
-                        <>
-                            <div className="form-group">
-                                <label>License No:</label>
-                                <input
-                                    type="text"
-                                    name="licenseNo"
-                                    value={formData.licenseNo}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                    <h1>AgroConnect</h1>
 
-                            <div className="form-group">
-                                <label>Mill Name:</label>
-                                <input
-                                    type="text"
-                                    name="millName"
-                                    value={formData.millName}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                    <p>
 
-                            <div className="form-group">
-                                <label>Mill Location:</label>
-                                <input
-                                    type="text"
-                                    name="millLocation"
-                                    value={formData.millLocation}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                        </>
-                    )}
+                        Join India's smart agricultural marketplace.
+                        Connect Farmers, Mill Owners and Inspectors
+                        through one secure platform.
 
-                    <button type="submit" disabled={loading}>
-                        {loading ? "Registering..." : "Register"}
-                    </button>
-                </form>
-                <p>
-                    Already have an account? <a href="/login">Login here</a>
-                </p>
+                    </p>
+
+                </div>
+
             </div>
+
+            {/* RIGHT PANEL */}
+
+            <div className="right-panel">
+
+                <div className="register-card">
+
+                    <h2>Create Account 🌱</h2>
+
+                    <span>
+
+                        Register to continue
+
+                    </span>
+
+                    {
+
+                        error &&
+
+                        <div className="error-box">
+
+                            {error}
+
+                        </div>
+
+                    }
+
+                    <form
+                        onSubmit={handleSubmit}
+                        className="register-form"
+                    >
+
+                        <div className="input-box">
+
+                            <FaUser className="icon"/>
+
+                            <input
+
+                                type="text"
+
+                                name="name"
+
+                                placeholder="Full Name"
+
+                                value={formData.name}
+
+                                onChange={handleChange}
+
+                                required
+
+                            />
+
+                        </div>
+
+                        <div className="input-box">
+
+                            <FaEnvelope className="icon"/>
+
+                            <input
+
+                                type="email"
+
+                                name="email"
+
+                                placeholder="Email"
+
+                                value={formData.email}
+
+                                onChange={handleChange}
+
+                                required
+
+                            />
+
+                        </div>
+
+                        <div className="input-box">
+
+                            <FaPhone className="icon"/>
+
+                            <input
+
+                                type="tel"
+
+                                name="phone"
+
+                                placeholder="Phone Number"
+
+                                value={formData.phone}
+
+                                onChange={handleChange}
+
+                                required
+
+                            />
+
+                        </div>
+
+                        <div className="input-box">
+
+                            <FaMapMarkerAlt className="icon"/>
+
+                            <input
+
+                                type="text"
+
+                                name="address"
+
+                                placeholder="Address"
+
+                                value={formData.address}
+
+                                onChange={handleChange}
+
+                                required
+
+                            />
+
+                        </div>
+
+                        <div className="input-box">
+
+                            <FaLock className="icon"/>
+
+                            <input
+
+                                type={
+                                    showPassword
+                                    ? "text"
+                                    : "password"
+                                }
+
+                                name="password"
+
+                                placeholder="Password"
+
+                                value={formData.password}
+
+                                onChange={handleChange}
+
+                                required
+
+                            />
+
+                            <span
+                                className="eye"
+                                onClick={() =>
+                                    setShowPassword(
+                                        !showPassword
+                                    )
+                                }
+                            >
+
+                                {
+
+                                    showPassword ?
+
+                                    <FaEyeSlash/>
+
+                                    :
+
+                                    <FaEye/>
+
+                                }
+
+                            </span>
+
+                        </div>
+
+                        <div className="input-box">
+
+                            <FaUserTag className="icon"/>
+
+                            <select
+                                name="role"
+                                value={formData.role}
+                                onChange={handleChange}
+                            >
+
+                                <option value="farmer">
+                                    🌾 Farmer
+                                </option>
+
+                                <option value="mill_owner">
+                                    🏭 Mill Owner
+                                </option>
+
+                                <option value="inspector">
+                                    🛡 Inspector
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        {
+
+                            formData.role === "mill_owner" && (
+
+                                <div className="mill-section">
+
+                                    <h3>
+
+                                        Mill Details
+
+                                    </h3>
+
+                                    <div className="input-box">
+
+                                        <FaIdCard className="icon"/>
+
+                                        <input
+
+                                            type="text"
+
+                                            name="licenseNo"
+
+                                            placeholder="License Number"
+
+                                            value={formData.licenseNo}
+
+                                            onChange={handleChange}
+
+                                            required
+
+                                        />
+
+                                    </div>
+
+                                    <div className="input-box">
+
+                                        <FaIndustry className="icon"/>
+
+                                        <input
+
+                                            type="text"
+
+                                            name="millName"
+
+                                            placeholder="Mill Name"
+
+                                            value={formData.millName}
+
+                                            onChange={handleChange}
+
+                                            required
+
+                                        />
+
+                                    </div>
+
+                                    <div className="input-box">
+
+                                        <FaMapPin className="icon"/>
+
+                                        <input
+
+                                            type="text"
+
+                                            name="millLocation"
+
+                                            placeholder="Mill Location"
+
+                                            value={formData.millLocation}
+
+                                            onChange={handleChange}
+
+                                            required
+
+                                        />
+
+                                    </div>
+
+                                </div>
+
+                            )
+
+                        }
+
+                        <button
+                            className="register-btn"
+                            disabled={loading}
+                        >
+
+                            {
+
+                                loading ?
+
+                                "Creating Account..."
+
+                                :
+
+                                "Create Account"
+
+                            }
+
+                        </button>
+
+                    </form>
+
+                    <div className="bottom-text">
+
+                        Already have an account?
+
+                        <Link to="/login">
+
+                            Login
+
+                        </Link>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
+
     );
+
 }

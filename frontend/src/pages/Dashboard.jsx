@@ -1,88 +1,251 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import "../App.css";
+
+import {
+    FaLeaf,
+    FaUserCircle,
+    FaEnvelope,
+    FaUserTag,
+    FaCheckCircle,
+    FaTimesCircle,
+    FaSignOutAlt,
+    FaArrowRight,
+    FaExclamationTriangle
+} from "react-icons/fa";
+
+import "./Dashboard.css";
 
 export default function Dashboard() {
+
     const { user, logout } = useContext(AuthContext);
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!user) {
+
+        if (!user)
             navigate("/login");
-        }
+
     }, [user, navigate]);
 
+    if (!user)
+        return null;
+
     const handleLogout = () => {
+
         logout();
+
         navigate("/login");
+
     };
 
-    if (!user) {
-        return <div>Loading...</div>;
-    }
+    const dashboardRoute = {
+
+        admin: "/admin",
+
+        farmer: "/farmer",
+
+        mill_owner: "/mill-owner",
+
+        inspector: "/inspector"
+
+    };
 
     return (
-        <div className="dashboard-container">
-            <div className="navbar">
-                <h1>AgroConnect - {user.name}</h1>
-                <button onClick={handleLogout} className="logout-btn">Logout</button>
-            </div>
 
-            <div className="dashboard-content">
-                <h2>Welcome, {user.name}!</h2>
-                <p>Role: <strong>{user.role}</strong></p>
-                <p>Email: {user.email}</p>
-                <p>Verified: <strong>{user.isVerified ? "✓ Yes" : "✗ No"}</strong></p>
+        <div className="dashboard-page">
 
-                <div className="dashboard-options">
-                    {user.role === "admin" && (
-                        <>
-                            <button onClick={() => navigate("/admin")}>Admin Dashboard</button>
-                            <p style={{ marginTop: "10px", fontSize: "12px", color: "#666" }}>
-                                Manage users, verify mill owners & inspectors, and create crops
-                            </p>
-                        </>
-                    )}
+            <nav className="dashboard-navbar">
 
-                    {user.role === "mill_owner" && (
-                        <>
-                            {!user.isVerified && (
-                                <div className="warning" style={{ padding: "10px", backgroundColor: "#fff3cd", borderRadius: "5px", marginBottom: "10px" }}>
-                                    ⚠️ Waiting for admin verification. You cannot create requirements until verified.
-                                </div>
-                            )}
-                            <button onClick={() => navigate("/mill-owner")}>Mill Owner Dashboard</button>
-                            <p style={{ marginTop: "10px", fontSize: "12px", color: "#666" }}>
-                                Create and manage crop requirements
-                            </p>
-                        </>
-                    )}
+                <div className="logo">
 
-                    {user.role === "farmer" && (
-                        <>
-                            <button onClick={() => navigate("/farmer")}>Farmer Dashboard</button>
-                            <p style={{ marginTop: "10px", fontSize: "12px", color: "#666" }}>
-                                View requirements and make sell offers
-                            </p>
-                        </>
-                    )}
+                    <FaLeaf/>
 
-                    {user.role === "inspector" && (
-                        <>
-                            {!user.isVerified && (
-                                <div className="warning" style={{ padding: "10px", backgroundColor: "#fff3cd", borderRadius: "5px", marginBottom: "10px" }}>
-                                    ⚠️ Waiting for admin verification. You cannot inspect until verified.
-                                </div>
-                            )}
-                            <button onClick={() => navigate("/inspector")}>Inspector Dashboard</button>
-                            <p style={{ marginTop: "10px", fontSize: "12px", color: "#666" }}>
-                                Complete inspections and verify transactions
-                            </p>
-                        </>
-                    )}
+                    AgroConnect
+
                 </div>
+
+                <div className="profile">
+
+                    <FaUserCircle/>
+
+                    <span>
+
+                        {user.name}
+
+                    </span>
+
+                </div>
+
+            </nav>
+
+            <div className="dashboard-wrapper">
+
+                <div className="welcome-card">
+
+                    <h1>
+
+                        Welcome back,
+
+                        {user.name}
+
+                        👋
+
+                    </h1>
+
+                    <p>
+
+                        Smart Agriculture Marketplace
+
+                    </p>
+
+                </div>
+
+                <div className="info-grid">
+
+                    <div className="info-card">
+
+                        <FaUserTag className="card-icon"/>
+
+                        <h3>
+
+                            Role
+
+                        </h3>
+
+                        <p>
+
+                            {user.role}
+
+                        </p>
+
+                    </div>
+
+                    <div className="info-card">
+
+                        {
+
+                            user.isVerified ?
+
+                            <FaCheckCircle
+                                className="verified"
+                            />
+
+                            :
+
+                            <FaTimesCircle
+                                className="not-verified"
+                            />
+
+                        }
+
+                        <h3>
+
+                            Verification
+
+                        </h3>
+
+                        <p>
+
+                            {
+
+                                user.isVerified ?
+
+                                "Verified"
+
+                                :
+
+                                "Pending"
+
+                            }
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div className="email-card">
+
+                    <FaEnvelope/>
+
+                    <span>
+
+                        {user.email}
+
+                    </span>
+
+                </div>
+
+                {
+
+                    (user.role==="mill_owner" ||
+                    user.role==="inspector")
+                    &&
+
+                    !user.isVerified &&
+
+                    <div className="warning-card">
+
+                        <FaExclamationTriangle/>
+
+                        <div>
+
+                            <h3>
+
+                                Verification Pending
+
+                            </h3>
+
+                            <p>
+
+                                Your account is awaiting admin approval.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                }
+
+                <button
+
+                    className="dashboard-btn"
+
+                    onClick={() =>
+                        navigate(
+                            dashboardRoute[user.role]
+                        )
+                    }
+
+                >
+
+                    Open Dashboard
+
+                    <FaArrowRight/>
+
+                </button>
+
+                <button
+
+                    className="logout-btn"
+
+                    onClick={handleLogout}
+
+                >
+
+                    <FaSignOutAlt/>
+
+                    Logout
+
+                </button>
+
             </div>
+
         </div>
+
     );
+
 }

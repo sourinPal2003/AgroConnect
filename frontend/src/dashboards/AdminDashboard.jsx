@@ -1,22 +1,51 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import ManageCrops from "../components/admin/ManageCrops";
+import PendingOffers from "../components/admin/PendingOffers";
+import Inspection from "../components/admin/Inspection";
+
+import "./AdminDashboard.css";
+
 import {
-    getAllUsers,
-    verifyUser,
-    createCrop,
-    getAllCrops,
-    deleteCrop,
-    getAllInspections,
-    getAllPendingOffers
+    FaLeaf,
+    FaUsers,
+    FaSeedling,
+    FaClipboardList,
+    FaUserCircle,
+    FaSignOutAlt,
+    FaBars,
+    FaTimes,
+    FaBell,
+    FaChartPie
+} from "react-icons/fa";
+
+import {
+
+getAllUsers,
+
+verifyUser,
+
+createCrop,
+
+getAllCrops,
+
+deleteCrop,
+
+getAllInspections,
+
+getAllPendingOffers,
+
 } from "../services/api";
-import "../App.css";
+import ManageUsers from "../components/admin/ManageUsers";
+import "./AdminDashboard.css";
 
 export default function AdminDashboard() {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [tab, setTab] = useState("users");
+    const [sidebarOpen, setSidebarOpen] = useState(true);
     const [users, setUsers] = useState([]);
     const [crops, setCrops] = useState([]);
     const [inspections, setInspections] = useState([]);
@@ -25,18 +54,33 @@ export default function AdminDashboard() {
     const [error, setError] = useState("");
     const [newCrop, setNewCrop] = useState({ name: "", season: "", type: "" });
 
-    useEffect(() => {
-        if (!user || user.role !== "admin") {
-            navigate("/login");
-        }
-    }, [user, navigate]);
+    // Load dashboard summary once
+useEffect(() => {
+    loadUsers();
+    loadCrops();
+    loadPendingOffers();
+    loadInspections();
+}, []);
 
-    useEffect(() => {
-        if (tab === "users") loadUsers();
-        if (tab === "crops") loadCrops();
-        if (tab === "inspections") loadInspections();
-        if (tab === "offers") loadPendingOffers();
-    }, [tab]);
+// Optional: reload current tab when it changes
+useEffect(() => {
+    switch (tab) {
+        case "users":
+            loadUsers();
+            break;
+        case "crops":
+            loadCrops();
+            break;
+        case "offers":
+            loadPendingOffers();
+            break;
+        case "inspections":
+            loadInspections();
+            break;
+        default:
+            break;
+    }
+}, [tab]);
 
     const loadUsers = async () => {
         try {
@@ -114,181 +158,355 @@ export default function AdminDashboard() {
             setError("Failed to delete crop");
         }
     };
+    const handleApproveOffer = async (offerId) => {
+    try {
+        await approveOffer(offerId);
+        loadPendingOffers();
+    } catch (err) {
+        setError("Failed to approve offer");
+    }
+};
+
+const handleRejectOffer = async (offerId) => {
+    try {
+        await rejectOffer(offerId);
+        loadPendingOffers();
+    } catch (err) {
+        setError("Failed to reject offer");
+    }
+};
+
 
     const handleLogout = () => {
         logout();
         navigate("/login");
     };
-
+    if (!user) {
     return (
-        <div className="dashboard-container">
-            <div className="navbar">
-                <h1>AgroConnect - Admin Dashboard</h1>
-                <button onClick={handleLogout} className="logout-btn">Logout</button>
-            </div>
-
-            <div className="tabs">
-                <button onClick={() => setTab("users")} className={tab === "users" ? "active" : ""}>
-                    Manage Users
-                </button>
-                <button onClick={() => setTab("crops")} className={tab === "crops" ? "active" : ""}>
-                    Manage Crops
-                </button>
-                <button onClick={() => setTab("offers")} className={tab === "offers" ? "active" : ""}>
-                    Pending Offers
-                </button>
-                <button onClick={() => setTab("inspections")} className={tab === "inspections" ? "active" : ""}>
-                    Inspections
-                </button>
-            </div>
-
-            <div className="tab-content">
-                {error && <div className="error-message">{error}</div>}
-                {loading && <p>Loading...</p>}
-
-                {tab === "users" && (
-                    <div>
-                        <h3>All Users</h3>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Verified</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map((u) => (
-                                    <tr key={u._id}>
-                                        <td>{u.name}</td>
-                                        <td>{u.email}</td>
-                                        <td>{u.role}</td>
-                                        <td>{u.isVerified ? "✓" : "✗"}</td>
-                                        <td>
-                                            {u.role !== "farmer" && u.role !== "admin" && (
-                                                <button
-                                                    onClick={() => handleVerify(u._id, !u.isVerified)}
-                                                    className="action-btn"
-                                                >
-                                                    {u.isVerified ? "Unverify" : "Verify"}
-                                                </button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                {tab === "crops" && (
-                    <div>
-                        <h3>Manage Crops</h3>
-                        <form onSubmit={handleAddCrop} className="form">
-                            <input
-                                type="text"
-                                placeholder="Crop Name"
-                                value={newCrop.name}
-                                onChange={(e) => setNewCrop({ ...newCrop, name: e.target.value })}
-                                required
-                            />
-                            <input
-                                type="text"
-                                placeholder="Season"
-                                value={newCrop.season}
-                                onChange={(e) => setNewCrop({ ...newCrop, season: e.target.value })}
-                                required
-                            />
-                            <input
-                                type="text"
-                                placeholder="Type"
-                                value={newCrop.type}
-                                onChange={(e) => setNewCrop({ ...newCrop, type: e.target.value })}
-                                required
-                            />
-                            <button type="submit">Add Crop</button>
-                        </form>
-                        <table className="table" style={{ marginTop: "20px" }}>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Season</th>
-                                    <th>Type</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {crops.map((crop) => (
-                                    <tr key={crop._id}>
-                                        <td>{crop.name}</td>
-                                        <td>{crop.season}</td>
-                                        <td>{crop.type}</td>
-                                        <td>
-                                            <button
-                                                onClick={() => handleDeleteCrop(crop._id)}
-                                                className="delete-btn"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                {tab === "offers" && (
-                    <div>
-                        <h3>Pending Sell Offers</h3>
-                        {pendingOffers.length === 0 ? (
-                            <p>No pending offers</p>
-                        ) : (
-                            <div className="offers-list">
-                                {pendingOffers.map((offer) => (
-                                    <div key={offer._id} className="offer-card">
-                                        <p><strong>Offer ID:</strong> {offer._id}</p>
-                                        <p><strong>Farmer:</strong> {offer.farmerId?.name}</p>
-                                        <p><strong>Quantity:</strong> {offer.approxQuantitySell} units</p>
-                                        <p><strong>Status:</strong> {offer.status}</p>
-                                        <button onClick={() => navigate(`/admin/assign-inspector/${offer._id}`)}>
-                                            Assign Inspector
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {tab === "inspections" && (
-                    <div>
-                        <h3>Inspections Status</h3>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Inspector</th>
-                                    <th>Offer ID</th>
-                                    <th>Status</th>
-                                    <th>Completed</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {inspections.map((inspection) => (
-                                    <tr key={inspection._id}>
-                                        <td>{inspection.inspectorId?.name}</td>
-                                        <td>{inspection.offerId?._id}</td>
-                                        <td>{inspection.transactionStatus}</td>
-                                        <td>{inspection.isTransactionCompleted ? "✓" : "✗"}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
+        <div className="loading-screen">
+            Loading...
         </div>
     );
+}
+   return (
+
+<div className="admin-page">
+
+    {/* Sidebar */}
+
+    <aside className={`sidebar ${sidebarOpen ? "open" : "collapsed"}`}>
+
+        <div className="sidebar-header">
+
+            <div className="logo">
+
+                <FaLeaf />
+
+                {sidebarOpen && <span>AgroConnect</span>}
+
+            </div>
+
+            <button
+                className="menu-btn"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+
+                {
+
+                    sidebarOpen ?
+
+                    <FaTimes/>
+
+                    :
+
+                    <FaBars/>
+
+                }
+
+            </button>
+
+        </div>
+
+        <nav>
+
+            <button
+                className={tab==="users" ? "active" : ""}
+                onClick={() => setTab("users")}
+            >
+
+                <FaUsers/>
+
+                {sidebarOpen && <span>Users</span>}
+
+            </button>
+
+            <button
+                className={tab==="crops" ? "active" : ""}
+                onClick={() => setTab("crops")}
+            >
+
+                <FaSeedling/>
+
+               {sidebarOpen && <span>Crops</span>}
+
+            </button>
+
+            <button
+                className={tab==="offers" ? "active" : ""}
+                onClick={() => setTab("offers")}
+            >
+
+                <FaClipboardList/>
+
+                {sidebarOpen && <span>Offers</span>}
+
+            </button>
+
+            <button
+                className={tab==="inspections" ? "active" : ""}
+                onClick={() => setTab("inspections")}
+            >
+
+                <FaChartPie/>
+
+                {sidebarOpen && <span>Inspection</span>}
+
+            </button>
+
+        </nav>
+
+        <button
+            className="logout-side"
+            onClick={handleLogout}
+        >
+
+            <FaSignOutAlt/>
+
+            {sidebarOpen && <span>Logout</span>}
+
+        </button>
+
+    </aside>
+
+    {/* Main */}
+
+    <main className="main-content">
+
+        {/* Topbar */}
+
+      <div className="topbar">
+
+    <h2 className="page-title">
+
+        Admin Dashboard
+
+    </h2>
+
+    <div className="top-right">
+
+        <FaBell className="bell"/>
+
+        <div className="profile">
+
+            <FaUserCircle/>
+
+            <span>{user.name}</span>
+
+        </div>
+
+    </div>
+
+</div>
+
+        {/* Welcome */}
+
+        <div className="hero-card">
+
+            <h1>
+
+                Welcome Back,
+
+                {user.name}
+
+                👋
+
+            </h1>
+
+            <p>
+
+                AgroConnect Administration Panel
+
+            </p>
+
+        </div>
+
+        {/* Stats */}
+
+        <div className="stats">
+
+            <div className="stat-card">
+
+                <FaUsers/>
+
+                <h2>
+
+                    {users.length}
+
+                </h2>
+
+                <span>
+
+                    Users
+
+                </span>
+
+            </div>
+
+            <div className="stat-card">
+
+                <FaSeedling/>
+
+                <h2>
+
+                    {crops.length}
+
+                </h2>
+
+                <span>
+
+                    Crops
+
+                </span>
+
+            </div>
+
+            <div className="stat-card">
+
+                <FaClipboardList/>
+
+                <h2>
+
+                    {pendingOffers.length}
+
+                </h2>
+
+                <span>
+
+                    Pending Offers
+
+                </span>
+
+            </div>
+
+            <div className="stat-card">
+
+                <FaChartPie/>
+
+                <h2>
+
+                    {inspections.length}
+
+                </h2>
+
+                <span>
+
+                    Inspections
+
+                </span>
+
+            </div>
+
+        </div>
+
+        {/* Main Content */}
+
+        <div className="content-card">
+
+            {
+
+                loading &&
+
+                <p>
+
+                    Loading...
+
+                </p>
+
+            }
+
+            {
+
+                error &&
+
+                <div className="error-box">
+
+                    {error}
+
+                </div>
+
+            }
+
+            {/* USERS */}
+
+            {
+
+                tab==="users" &&
+
+                <ManageUsers
+
+                    users={users}
+
+                    handleVerify={handleVerify}
+
+                />
+
+            }
+
+            {/* CROPS */}
+
+           {
+    tab === "crops" && (
+
+        <ManageCrops
+            crops={crops}
+            newCrop={newCrop}
+            setNewCrop={setNewCrop}
+            handleAddCrop={handleAddCrop}
+            handleDeleteCrop={handleDeleteCrop}
+        />
+
+    )
+}
+
+            {/* OFFERS */}
+
+          {
+    tab==="offers" &&
+
+    <PendingOffers
+
+        offers={pendingOffers}
+
+    />
+
+}
+            {/* INSPECTIONS */}
+
+            {
+    tab==="inspections" &&
+
+    <Inspection
+
+        inspections={inspections}
+
+    />
+
+}
+        </div>
+
+    </main>
+
+</div>
+
+);
 }
