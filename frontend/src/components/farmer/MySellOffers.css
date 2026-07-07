@@ -7,17 +7,17 @@
     font-family:'Poppins',sans-serif;
 }
 
-/* =====================================
+/* ======================================
    MAIN CONTAINER
-===================================== */
+====================================== */
 
 .offers-container{
     width:100%;
 }
 
-/* =====================================
+/* ======================================
    HEADER
-===================================== */
+====================================== */
 
 .offers-header{
 
@@ -27,11 +27,11 @@
 
     align-items:center;
 
-    margin-bottom:30px;
-
     flex-wrap:wrap;
 
     gap:20px;
+
+    margin-bottom:28px;
 
 }
 
@@ -55,27 +55,27 @@
 
 }
 
-/* =====================================
-   SEARCH
-===================================== */
+/* ======================================
+   SEARCH BAR
+====================================== */
 
 .search-box-offer{
+
+    width:320px;
 
     display:flex;
 
     align-items:center;
 
-    gap:10px;
-
-    width:320px;
-
-    padding:12px 18px;
+    gap:12px;
 
     background:#fff;
 
-    border:1px solid #CBD5E1;
+    padding:12px 18px;
 
     border-radius:14px;
+
+    border:1px solid #dbe4ec;
 
     transition:.3s;
 
@@ -107,9 +107,9 @@
 
     background:none;
 
-    font-size:15px;
+    color:#334155;
 
-    color:#1E293B;
+    font-size:15px;
 
 }
 
@@ -119,9 +119,9 @@
 
 }
 
-/* =====================================
+/* ======================================
    TABLE CARD
-===================================== */
+====================================== */
 
 .offers-table-card{
 
@@ -131,14 +131,13 @@
 
     overflow:hidden;
 
-    box-shadow:
-        0 12px 30px rgba(0,0,0,.08);
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
 
 }
 
-/* =====================================
+/* ======================================
    TABLE
-===================================== */
+====================================== */
 
 .offers-table{
 
@@ -146,19 +145,22 @@
 
     border-collapse:collapse;
 
+    table-layout:fixed;
 }
 
 .offers-table thead{
 
-    background:#F1F5F9;
+    background:#F8FAFC;
 
 }
 
 .offers-table th{
 
-    padding:18px;
-
-    text-align:left;
+    padding:16px 12px;
+    
+    text-align:center;
+    
+    vertical-align:middle;
 
     font-size:15px;
 
@@ -170,13 +172,15 @@
 
 .offers-table td{
 
-    padding:18px;
+    padding:16px 12px;
+    
+    text-align:center;
+    
+    vertical-align:middle;
 
-    border-bottom:1px solid #E2E8F0;
+    border-bottom:1px solid #EDF2F7;
 
     color:#475569;
-
-    vertical-align:middle;
 
 }
 
@@ -188,15 +192,15 @@
 
 .offers-table tbody tr:hover{
 
-    background:#F8FAFC;
+    background:#F8FFFB;
 
 }
 
-/* =====================================
-   FARMER INFO
-===================================== */
+/* ======================================
+   CROP INFO
+====================================== */
 
-.farmer-info{
+.crop-name{
 
     display:flex;
 
@@ -206,11 +210,11 @@
 
 }
 
-.avatar{
+.crop-avatar{
 
-    width:45px;
+    width:46px;
 
-    height:45px;
+    height:46px;
 
     border-radius:50%;
 
@@ -226,34 +230,57 @@
 
     align-items:center;
 
-    color:#fff;
+    color:white;
 
-    font-weight:700;
-
-    font-size:16px;
-
-    box-shadow:
-        0 6px 18px rgba(34,197,94,.25);
+    box-shadow:0 8px 18px rgba(34,197,94,.25);
 
 }
 
-.farmer-info strong{
+.crop-avatar svg{
+
+    font-size:18px;
+
+}
+
+.crop-name strong{
 
     color:#1E293B;
 
 }
 
-.farmer-info small{
+/* ======================================
+   SEASON
+====================================== */
 
-    color:#64748B;
+.season{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:#475569;
+
+    font-weight:500;
 
 }
 
-/* =====================================
-   CROP
-===================================== */
+.season svg{
 
-.crop-info{
+    color:#16A34A;
+
+}
+
+/* ======================================
+   MILL INFO
+====================================== */
+
+.mill-info,
+
+.location,
+
+.quantity{
 
     display:flex;
 
@@ -265,79 +292,31 @@
 
 }
 
-.crop-info svg{
+.mill-info svg,
 
-    color:#22C55E;
+.location svg,
 
-}
-
-/* =====================================
-   SEASON
-===================================== */
-
-.season-badge{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    padding:8px 16px;
-
-    background:#ECFDF5;
-
-    color:#15803D;
-
-    border-radius:25px;
-
-    font-size:13px;
-
-    font-weight:600;
-
-}
-
-.season-badge svg{
+.quantity svg{
 
     color:#16A34A;
 
 }
 
-/* =====================================
-   QUANTITY
-===================================== */
-
-.quantity{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    font-weight:600;
-
-    color:#166534;
-
-}
-
-.quantity svg{
-
-    color:#22C55E;
-
-}
-
-/* =====================================
+/* ======================================
    STATUS
-===================================== */
+====================================== */
 
 .status{
 
-    display:inline-flex;
+    align-items:center;
+
+    display:flex;
 
     justify-content:center;
 
     align-items:center;
+
+    gap:8px;
 
     padding:8px 16px;
 
@@ -348,6 +327,7 @@
     font-weight:600;
 
     text-transform:capitalize;
+    white-space:nowrap;
 
 }
 
@@ -374,54 +354,10 @@
     color:#DC2626;
 
 }
-.assign-btn{
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-
-    padding:10px 18px;
-
-    background:#1fa74f;
-
-    color:#fff;
-
-    border:none;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    font-size:14px;
-
-    font-weight:600;
-
-    transition:.25s;
-
-}
-
-.assign-btn:hover{
-
-    background:#16843d;
-
-    transform:translateY(-2px);
-
-    box-shadow:0 8px 20px rgba(31,167,79,.25);
-
-}
-.offers-table th:last-child,
-.offers-table td:last-child{
-
-    width:180px;
-
-    text-align:center;
-
-}
-
-/* =====================================
+/* ======================================
    EMPTY
-===================================== */
+====================================== */
 
 .empty{
 
@@ -429,15 +365,15 @@
 
     padding:60px;
 
-    font-size:18px;
-
     color:#94A3B8;
+
+    font-size:18px;
 
 }
 
-/* =====================================
+/* ======================================
    RESPONSIVE
-===================================== */
+====================================== */
 
 @media(max-width:992px){
 
@@ -479,14 +415,70 @@
 
     }
 
-    .avatar{
+    .crop-avatar{
 
         width:40px;
 
         height:40px;
 
-        font-size:14px;
-
     }
+    /* ===========================
+   OTP
+=========================== */
+.otp-box{
+    display: flex;
+    
+    justify-content: center;
+    
+    align-items: center;
+
+    flex-direction:column;
+
+    gap:5px;
+
+}
+
+.otp-value{
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#15803d;
+
+    letter-spacing:2px;
+
+}
+
+.otp-box small{
+
+    color:#64748b;
+
+    font-size:12px;
+
+    white-space:nowrap;
+
+}
+
+.otp-hidden{
+
+    color:#64748b;
+
+    font-weight:600;
+
+}
+.offers-table th:nth-child(6),
+.offers-table td:nth-child(6){
+
+    width:170px;
+
+}
+
+.offers-table th:nth-child(7),
+.offers-table td:nth-child(7){
+
+    width:180px;
+
+}
 
 }

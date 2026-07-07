@@ -101,7 +101,10 @@ body,
 
     border-radius:24px;
 
-    padding:45px;
+    padding-top:100px;
+    padding-right:30px;
+    padding-bottom:45px;
+    padding-left:40px;
 
     box-shadow:
     0 20px 60px rgba(0,0,0,.08);

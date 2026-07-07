@@ -45,11 +45,17 @@ export const getAllPendingOffers = () => api.get("/sell-offers/all-pending");
 export const getOfferDetails = (offerId) => api.get(`/sell-offers/${offerId}`);
 
 // Inspection APIs
-export const assignInspection = (data) => api.post("/inspections/assign", data);
+// export const assignInspection = (data) => api.post("/inspections/assign", data);
 export const getAllInspections = () => api.get("/inspections/all");
 export const getMyInspections = () => api.get("/inspections/my-inspections");
 export const getInspectionDetails = (inspectionId) => api.get(`/inspections/${inspectionId}`);
 export const completeInspection = (inspectionId, data) =>
     api.put(`/inspections/${inspectionId}/complete`, data);
+// Inspection Management APIs
 
+export const getVerifiedInspectors = () =>
+    api.get("/admin/verified-inspectors");
+
+export const assignInspection = (data) =>
+    api.post("/inspections/assign", data);
 export default api;

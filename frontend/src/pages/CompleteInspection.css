@@ -1,0 +1,417 @@
+/* =========================================
+   Complete Inspection
+========================================= */
+
+.complete-page{
+    min-height:100vh;
+    background:#f5f8fc;
+    padding:40px;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+}
+
+/* =========================================
+   Card
+========================================= */
+
+.inspection-card{
+    width:100%;
+    max-width:950px;
+    background:#ffffff;
+    border-radius:28px;
+    padding:40px;
+    box-shadow:0 18px 45px rgba(0,0,0,.08);
+    animation:fadeIn .35s ease;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* =========================================
+   Header
+========================================= */
+
+.inspection-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+}
+
+.inspection-title h2{
+    font-size:38px;
+    color:#166534;
+    font-weight:700;
+}
+
+/* =========================================
+   Back Button
+========================================= */
+
+.back-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:none;
+    background:#e2e8f0;
+    color:#334155;
+    padding:12px 20px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.back-btn:hover{
+    background:#cbd5e1;
+}
+
+/* =========================================
+   Error Box
+========================================= */
+
+.error-box{
+    background:#fee2e2;
+    color:#dc2626;
+    padding:16px;
+    border-left:5px solid #ef4444;
+    border-radius:12px;
+    margin-bottom:25px;
+    font-weight:600;
+}
+
+/* =========================================
+   Details
+========================================= */
+
+.details-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:22px;
+    margin-bottom:35px;
+}
+
+.details-grid label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#334155;
+}
+
+.detail-box{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    padding:15px 18px;
+    color:#475569;
+    font-weight:600;
+}
+
+.detail-box svg{
+    color:#22c55e;
+    font-size:18px;
+}
+
+/* =========================================
+   Form
+========================================= */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:24px;
+    margin-bottom:35px;
+}
+
+.form-grid label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#334155;
+}
+
+.form-grid input,
+.form-grid select{
+    width:100%;
+    padding:14px 16px;
+    border:1px solid #dbe4ef;
+    border-radius:14px;
+    font-size:16px;
+    background:#fff;
+    transition:.25s;
+    color:#334155;
+}
+
+.form-grid input:focus,
+.form-grid select:focus{
+    outline:none;
+    border-color:#22c55e;
+    box-shadow:0 0 0 4px rgba(34,197,94,.12);
+}
+
+/* =========================================
+   Icon Inputs
+========================================= */
+
+.input-icon{
+    position:relative;
+}
+
+.input-icon svg{
+    position:absolute;
+    left:16px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#22c55e;
+    font-size:18px;
+}
+
+.input-icon input{
+    padding-left:48px;
+}
+
+/* =========================================
+   Buttons
+========================================= */
+
+.inspection-buttons{
+    display:flex;
+    justify-content:flex-end;
+    gap:16px;
+    margin-top:10px;
+}
+
+.cancel-btn{
+    background:#e2e8f0;
+    color:#334155;
+    border:none;
+    padding:14px 30px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.cancel-btn:hover{
+    background:#cbd5e1;
+}
+
+.complete-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:#22c55e;
+    color:#fff;
+    border:none;
+    padding:14px 34px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.complete-btn:hover:not(:disabled){
+    background:#16a34a;
+    transform:translateY(-2px);
+}
+
+.complete-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+/* =========================================
+   Responsive
+========================================= */
+@media(max-width:768px){
+
+.complete-page{
+    padding:20px;
+}
+
+.inspection-card{
+    padding:25px;
+}
+
+.inspection-title{
+    flex-direction:column;
+    gap:20px;
+    align-items:flex-start;
+}
+
+.inspection-title h2{
+    font-size:30px;
+}
+
+.details-grid,
+.form-grid{
+    grid-template-columns:1fr;
+}
+
+.inspection-buttons{
+    flex-direction:column;
+}
+
+.cancel-btn,
+.complete-btn{
+    width:100%;
+}
+
+}
+/* =========================================
+   TRANSACTION
+========================================= */
+
+.transaction-section{
+
+    grid-column:1/-1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    margin-top:5px;
+
+}
+
+.transaction-section label{
+
+    font-size:17px;
+
+    font-weight:700;
+
+    color:#1e3a5f;
+
+}
+
+.transaction-select{
+
+    width:100%;
+
+    height:56px;
+
+    padding:0 18px;
+
+    border:1px solid #dbe4ef;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    color:#334155;
+
+    font-size:16px;
+
+    transition:.25s;
+
+}
+
+.transaction-select:focus{
+
+    outline:none;
+
+    border-color:#22c55e;
+
+    box-shadow:0 0 0 4px rgba(34,197,94,.15);
+
+}
+
+
+/* =========================================
+   REJECTION BOX
+========================================= */
+
+.reject-box{
+
+    grid-column:1/-1;
+
+    background:#fff7f7;
+
+    border:1px solid #fecaca;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    margin-top:10px;
+
+}
+
+.reject-box label{
+
+    display:block;
+
+    margin-bottom:12px;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#b91c1c;
+
+}
+
+.reject-textarea{
+
+    width:100%;
+
+    min-height:150px;
+
+    padding:16px;
+
+    border:1px solid #fca5a5;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    color:#1e293b;
+
+    font-size:15px;
+
+    line-height:1.7;
+
+    resize:vertical;
+
+    outline:none;
+
+    font-family:'Poppins',sans-serif;
+
+    transition:.25s;
+
+}
+
+.reject-textarea::placeholder{
+
+    color:#94a3b8;
+
+}
+
+.reject-textarea:focus{
+
+    border-color:#ef4444;
+
+    box-shadow:0 0 0 4px rgba(239,68,68,.12);
+
+}

@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import ManageCrops from "../components/admin/ManageCrops";
 import PendingOffers from "../components/admin/PendingOffers";
-import Inspection from "../components/admin/Inspection";
+import InspectionManagement
+from "../components/admin/InspectionManagement";
 
-import "./AdminDashboard.css";
+import "../styles/Dashboard.css";
 
 import {
     FaLeaf,
@@ -48,7 +49,7 @@ export default function AdminDashboard() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [users, setUsers] = useState([]);
     const [crops, setCrops] = useState([]);
-    const [inspections, setInspections] = useState([]);
+    // const [inspections, setInspections] = useState([]);
     const [pendingOffers, setPendingOffers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -59,7 +60,6 @@ useEffect(() => {
     loadUsers();
     loadCrops();
     loadPendingOffers();
-    loadInspections();
 }, []);
 
 // Optional: reload current tab when it changes
@@ -73,9 +73,6 @@ useEffect(() => {
             break;
         case "offers":
             loadPendingOffers();
-            break;
-        case "inspections":
-            loadInspections();
             break;
         default:
             break;
@@ -101,18 +98,6 @@ useEffect(() => {
             setCrops(response.data);
         } catch (err) {
             setError("Failed to load crops");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const loadInspections = async () => {
-        try {
-            setLoading(true);
-            const response = await getAllInspections();
-            setInspections(response.data);
-        } catch (err) {
-            setError("Failed to load inspections");
         } finally {
             setLoading(false);
         }
@@ -402,11 +387,7 @@ const handleRejectOffer = async (offerId) => {
 
                 <FaChartPie/>
 
-                <h2>
-
-                    {inspections.length}
-
-                </h2>
+                <h2>-</h2>
 
                 <span>
 
@@ -495,11 +476,7 @@ const handleRejectOffer = async (offerId) => {
             {
     tab==="inspections" &&
 
-    <Inspection
-
-        inspections={inspections}
-
-    />
+    <InspectionManagement />
 
 }
         </div>

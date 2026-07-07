@@ -1,0 +1,347 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+/* =========================================
+   PAGE
+========================================= */
+
+.offer-page{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#f4f7fb;
+
+    padding:20px;
+
+}
+
+/* =========================================
+   CARD
+========================================= */
+
+.offer-card{
+
+    width:100%;
+
+    max-width:760px;
+
+    background:#fff;
+
+    border-radius:22px;
+
+    padding:30px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+}
+
+/* =========================================
+   HEADER
+========================================= */
+.offer-card h1{
+
+    font-size:30px;
+
+    color:#166534;
+
+    text-align:center;
+
+    margin-bottom:6px;
+
+}
+
+.offer-card p{
+
+    text-align:center;
+
+    margin-bottom:25px;
+
+}
+.offer-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+
+}
+
+/* =========================================
+   FORM
+========================================= */
+
+form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.form-group label{
+
+    margin-bottom:8px;
+
+    color:#334155;
+
+    font-weight:600;
+
+    font-size:15px;
+
+}
+
+.form-group input{
+
+    height:52px;
+
+    border:1px solid #dbe4ef;
+
+    border-radius:12px;
+
+    padding:0 18px;
+
+    background:white;
+
+    color:#111827;
+
+    font-size:16px;
+
+    font-weight:500;
+
+}
+
+.form-group input:disabled{
+
+    background:#f8fafc;
+
+    color:#334155;
+
+}
+
+.form-group input:focus{
+
+    border-color:#22C55E;
+
+    box-shadow:
+        0 0 0 4px rgba(34,197,94,.15);
+
+}
+
+/* =========================================
+   ERROR
+========================================= */
+
+.offer-error{
+
+    background:#FEE2E2;
+
+    color:#B91C1C;
+
+    border-left:4px solid #DC2626;
+
+    padding:12px 16px;
+
+    border-radius:10px;
+
+    margin-bottom:20px;
+
+    font-size:14px;
+
+}
+/* ===========================
+   INPUT FIELDS
+=========================== */
+
+.offer-form input{
+
+    width:100%;
+
+    height:56px;
+
+    padding:0 18px;
+
+    border:1px solid #dbe4ef;
+
+    border-radius:14px;
+
+    background:#ffffff;
+
+    color:#000000 !important;
+
+    font-size:17px;
+
+    font-weight:500;
+
+    outline:none;
+
+    caret-color:#15803d;
+
+}
+
+/* Placeholder */
+
+.offer-form input::placeholder{
+
+    color:#94a3b8;
+
+    opacity:1;
+
+}
+
+/* Focus */
+
+.offer-form input:focus{
+
+    border-color:#22c55e;
+
+    box-shadow:0 0 0 4px rgba(34,197,94,.15);
+
+}
+
+/* Disabled fields */
+
+.offer-form input:disabled{
+
+    background:#f8fafc;
+
+    color:#1e293b !important;
+
+    opacity:1;
+
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.offer-buttons{
+
+    margin-top:28px;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:16px;
+
+}
+
+.cancel-btn{
+
+    padding:12px 26px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#E2E8F0;
+
+    color:#334155;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.cancel-btn:hover{
+
+    background:#CBD5E1;
+
+}
+
+.submit-btn{
+
+    padding:12px 28px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:linear-gradient(
+        135deg,
+        #22C55E,
+        #15803D
+    );
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.submit-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 12px 22px rgba(34,197,94,.25);
+
+}
+
+.submit-btn:disabled{
+
+    opacity:.65;
+
+    cursor:not-allowed;
+
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media(max-width:768px){
+
+.offer-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+.offer-buttons{
+
+    flex-direction:column;
+
+}
+
+.cancel-btn,
+.submit-btn{
+
+    width:100%;
+
+}
+
+}

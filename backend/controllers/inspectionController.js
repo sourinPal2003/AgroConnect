@@ -123,7 +123,8 @@ const completeInspection = async (req, res) => {
             quantityReal,
             finalRate,
             otpFromFarmer,
-            transactionStatus
+            transactionStatus,
+             rejectReason
         } = req.body;
 
         // Transaction status required
@@ -186,6 +187,11 @@ const completeInspection = async (req, res) => {
         // Update inspection
         inspection.transactionStatus = transactionStatus;
 
+        if(transactionStatus==="reject"){
+
+    inspection.rejectReason = rejectReason;
+
+}
         inspection.quantityReal =
             transactionStatus === "accept"
                 ? quantityReal

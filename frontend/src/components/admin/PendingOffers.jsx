@@ -1,11 +1,13 @@
 import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
     FaSearch,
     FaUser,
     FaSeedling,
     FaWeightHanging,
-    FaLeaf
+    FaLeaf,
+    FaUserCheck
 } from "react-icons/fa";
 
 import "./PendingOffers.css";
@@ -15,7 +17,7 @@ export default function PendingOffers({
     offers = []
 
 }){
-
+    const navigate = useNavigate();
     const [search,setSearch]=useState("");
 
     const filteredOffers=useMemo(()=>{
@@ -107,6 +109,7 @@ export default function PendingOffers({
                             <th>Quantity</th>
 
                             <th>Status</th>
+                            <th>Action</th>
 
                         </tr>
 
@@ -123,7 +126,7 @@ export default function PendingOffers({
                                 <tr>
 
                                     <td
-                                        colSpan="5"
+                                        colSpan="6"
                                         className="empty"
                                     >
 
@@ -268,6 +271,25 @@ export default function PendingOffers({
                                             </span>
 
                                         </td>
+                                        <td>
+
+    <button
+
+        className="assign-btn"
+
+        onClick={() =>
+            navigate(`/admin/assign-inspector/${offer._id}`)
+        }
+
+    >
+
+        <FaUserCheck />
+
+        Assign Inspector
+
+    </button>
+
+</td>
 
                                     </tr>
 

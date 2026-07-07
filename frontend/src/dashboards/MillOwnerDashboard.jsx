@@ -1,220 +1,428 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { AuthContext } from "../context/AuthContext";
+
 import {
-    createMillRequirement,
     getMyRequirements,
-    getAllCrops,
     updateRequirementStatus
 } from "../services/api";
-import "../App.css";
+
+import CreateRequirement from "../components/millOwner/CreateRequirement";
+import MyRequirements from "../components/millOwner/MyRequirements";
+
+import {
+    FaLeaf,
+    FaClipboardList,
+    FaWarehouse,
+    FaTruckLoading,
+    FaCheckCircle,
+    FaBars,
+    FaTimes,
+    FaBell,
+    FaUserCircle,
+    FaSignOutAlt
+} from "react-icons/fa";
+
+import "../styles/Dashboard.css";
 
 export default function MillOwnerDashboard() {
+
     const { user, logout } = useContext(AuthContext);
+
     const navigate = useNavigate();
 
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+
     const [tab, setTab] = useState("create");
-    const [crops, setCrops] = useState([]);
+
     const [requirements, setRequirements] = useState([]);
+
     const [loading, setLoading] = useState(false);
+
     const [error, setError] = useState("");
-    const [newRequirement, setNewRequirement] = useState({
-        cropId: "",
-        quality: "",
-        requiredTotalQuantity: "",
-        expectedRate: ""
-    });
 
     useEffect(() => {
-        if (!user || user.role !== "mill_owner") {
+
+        if (!user) {
+
             navigate("/login");
-        }
-    }, [user, navigate]);
 
-    useEffect(() => {
-        if (user?.isVerified) {
-            loadCrops();
-        }
-        if (tab === "my-requirements") {
-            loadRequirements();
-        }
-    }, [tab, user?.isVerified]);
+            return;
 
-    const loadCrops = async () => {
-        try {
-            const response = await getAllCrops();
-            setCrops(response.data);
-        } catch (err) {
-            setError("Failed to load crops");
         }
-    };
+
+        loadRequirements();
+
+    }, []);
 
     const loadRequirements = async () => {
+
         try {
+
             setLoading(true);
+
             const response = await getMyRequirements();
+
             setRequirements(response.data);
-        } catch (err) {
+
+        }
+
+        catch {
+
             setError("Failed to load requirements");
-        } finally {
+
+        }
+
+        finally {
+
             setLoading(false);
-        }
-    };
 
-    const handleAddRequirement = async (e) => {
-        e.preventDefault();
-        try {
-            await createMillRequirement(newRequirement);
-            setNewRequirement({
-                cropId: "",
-                quality: "",
-                requiredTotalQuantity: "",
-                expectedRate: ""
-            });
-            setTab("my-requirements");
-            loadRequirements();
-        } catch (err) {
-            setError(err.response?.data?.error || "Failed to create requirement");
         }
-    };
 
+    };
     const handleCloseRequirement = async (requirementId) => {
-        try {
-            await updateRequirementStatus(requirementId, "closed");
-            loadRequirements();
-        } catch (err) {
-            setError("Failed to close requirement");
-        }
-    };
 
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
-    };
+    try {
 
-    if (!user?.isVerified) {
-        return (
-            <div className="dashboard-container">
-                <div className="navbar">
-                    <h1>AgroConnect - Mill Owner</h1>
-                    <button onClick={handleLogout} className="logout-btn">Logout</button>
-                </div>
-                <div className="warning" style={{ margin: "20px", padding: "20px", backgroundColor: "#f8d7da", borderRadius: "5px" }}>
-                    <h3>⚠️ Account Not Verified</h3>
-                    <p>Your account is awaiting verification from the admin. You cannot create requirements until verified.</p>
-                </div>
-            </div>
+        await updateRequirementStatus(
+            requirementId,
+            "closed"
         );
+
+        loadRequirements();
+
     }
 
+    catch (err) {
+
+        console.error(err);
+
+        setError("Failed to close requirement");
+
+    }
+
+};
+    const handleLogout = () => {
+
+        logout();
+
+        navigate("/login");
+
+    };
+
+    if (!user) {
+
+        return (
+
+            <div className="loading-screen">
+
+                Loading...
+
+            </div>
+
+        );
+
+    }
+
+    const activeRequirements =
+        requirements.filter(r => r.status === "active").length;
+
+    const closedRequirements =
+        requirements.filter(r => r.status === "closed").length;
+
+    const totalQuantity =
+        requirements.reduce(
+            (sum, r) => sum + Number(r.requiredTotalQuantity || 0),
+            0
+        );
+
     return (
-        <div className="dashboard-container">
-            <div className="navbar">
-                <h1>AgroConnect - Mill Owner Dashboard</h1>
-                <button onClick={handleLogout} className="logout-btn">Logout</button>
-            </div>
 
-            <div className="tabs">
-                <button onClick={() => setTab("create")} className={tab === "create" ? "active" : ""}>
-                    Create Requirement
-                </button>
-                <button onClick={() => setTab("my-requirements")} className={tab === "my-requirements" ? "active" : ""}>
-                    My Requirements
-                </button>
-            </div>
+        <div className="mill-page">
 
-            <div className="tab-content">
-                {error && <div className="error-message">{error}</div>}
-                {loading && <p>Loading...</p>}
+            {/* Sidebar */}
 
-                {tab === "create" && (
-                    <div>
-                        <h3>Create Mill Requirement</h3>
-                        <form onSubmit={handleAddRequirement} className="form">
-                            <div className="form-group">
-                                <label>Select Crop:</label>
-                                <select
-                                    value={newRequirement.cropId}
-                                    onChange={(e) => setNewRequirement({ ...newRequirement, cropId: e.target.value })}
-                                    required
-                                >
-                                    <option value="">Select a crop</option>
-                                    {crops.map((crop) => (
-                                        <option key={crop._id} value={crop._id}>
-                                            {crop.name} ({crop.season})
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+            <aside className={`sidebar ${sidebarOpen ? "open" : "collapsed"}`}>
 
-                            <div className="form-group">
-                                <label>Quality Need:</label>
-                                <input
-                                    type="number"
-                                    value={newRequirement.quality}
-                                    onChange={(e) => setNewRequirement({ ...newRequirement, quality: e.target.value })}
-                                    placeholder="Enter quality"
-                                    required
-                                />
-                            </div>
+                <div className="sidebar-header">
 
-                            <div className="form-group">
-                                <label>Required Total Quantity:</label>
-                                <input
-                                    type="number"
-                                    value={newRequirement.requiredTotalQuantity}
-                                    onChange={(e) => setNewRequirement({ ...newRequirement, requiredTotalQuantity: e.target.value })}
-                                    placeholder="Enter total quantity needed"
-                                    required
-                                />
-                            </div>
+                    <div className="logo">
 
-                            <div className="form-group">
-                                <label>Expected Rate (per unit):</label>
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    value={newRequirement.expectedRate}
-                                    onChange={(e) => setNewRequirement({ ...newRequirement, expectedRate: e.target.value })}
-                                    placeholder="Enter expected rate"
-                                    required
-                                />
-                            </div>
+                        <FaLeaf />
 
-                            <button type="submit">Create Requirement</button>
-                        </form>
+                        {sidebarOpen && <span>AgroConnect</span>}
+
                     </div>
-                )}
 
-                {tab === "my-requirements" && (
-                    <div>
-                        <h3>My Requirements</h3>
-                        {requirements.length === 0 ? (
-                            <p>No requirements created yet</p>
-                        ) : (
-                            <div className="requirements-list">
-                                {requirements.map((req) => (
-                                    <div key={req._id} className="requirement-card">
-                                        <p><strong>Crop:</strong> {req.cropId?.name}</p>
-                                        <p><strong>Quality Need:</strong> {req.quality} units</p>
-                                        <p><strong>Required Quantity:</strong> {req.requiredTotalQuantity} units</p>
-                                        <p><strong>Expected Rate:</strong> ${req.expectedRate}/unit</p>
-                                        <p><strong>Status:</strong> <span style={{ color: req.status === "active" ? "green" : "red" }}>{req.status.toUpperCase()}</span></p>
-                                        {req.status === "active" && (
-                                            <button
-                                                onClick={() => handleCloseRequirement(req._id)}
-                                                className="delete-btn"
-                                            >
-                                                Close Requirement
-                                            </button>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                    <button
+                        className="menu-btn"
+                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                    >
+
+                        {
+
+                            sidebarOpen ?
+
+                                <FaTimes />
+
+                                :
+
+                                <FaBars />
+
+                        }
+
+                    </button>
+
+                </div>
+
+                <nav>
+
+                    <button
+                        className={tab === "create" ? "active" : ""}
+                        onClick={() => setTab("create")}
+                    >
+
+                        <FaWarehouse />
+
+                        {sidebarOpen && <span>Create Requirement</span>}
+
+                    </button>
+
+                    <button
+                        className={tab === "requirements" ? "active" : ""}
+                        onClick={() => setTab("requirements")}
+                    >
+
+                        <FaClipboardList />
+
+                        {sidebarOpen && <span>My Requirements</span>}
+
+                    </button>
+
+                </nav>
+
+                <button
+                    className="logout-side"
+                    onClick={handleLogout}
+                >
+
+                    <FaSignOutAlt />
+
+                    {sidebarOpen && <span>Logout</span>}
+
+                </button>
+
+            </aside>
+
+            {/* Main */}
+
+            <main className="main-content">
+
+                {/* Topbar */}
+
+                <div className="topbar">
+
+                    <h2 className="page-title">
+
+                        Mill Owner Dashboard
+
+                    </h2>
+
+                    <div className="top-right">
+
+                        <FaBell className="bell" />
+
+                        <div className="profile">
+
+                            <FaUserCircle />
+
+                            <span>{user.name}</span>
+
+                        </div>
+
                     </div>
-                )}
-            </div>
+
+                </div>
+
+                {/* Verification */}
+
+                {
+
+                    !user.isVerified &&
+
+                    <div className="warning-card">
+
+                        <h3>
+
+                            ⚠ Account Verification Pending
+
+                        </h3>
+
+                        <p>
+
+                            Your account is waiting for administrator approval.
+                            You cannot create crop requirements until your
+                            account is verified.
+
+                        </p>
+
+                    </div>
+
+                }
+
+                {/* Hero */}
+
+                <div className="hero-card">
+
+                    <h1>
+
+                        Welcome Back, {user.name} 👋
+
+                    </h1>
+
+                    <p>
+
+                        Create crop requirements and manage all your
+                        requirements from one place.
+
+                    </p>
+
+                </div>
+
+                {/* Statistics */}
+
+                <div className="stats">
+
+                    <div className="stat-card">
+
+                        <FaClipboardList />
+
+                        <h2>
+
+                            {requirements.length}
+
+                        </h2>
+
+                        <span>
+
+                            Total Requirements
+
+                        </span>
+
+                    </div>
+
+                    <div className="stat-card">
+
+                        <FaCheckCircle />
+
+                        <h2>
+
+                            {activeRequirements}
+
+                        </h2>
+
+                        <span>
+
+                            Active
+
+                        </span>
+
+                    </div>
+
+                    <div className="stat-card">
+
+                        <FaTruckLoading />
+
+                        <h2>
+
+                            {totalQuantity}
+
+                        </h2>
+
+                        <span>
+
+                            Total Quantity
+
+                        </span>
+
+                    </div>
+
+                    <div className="stat-card">
+
+                        <FaWarehouse />
+
+                        <h2>
+
+                            {closedRequirements}
+
+                        </h2>
+
+                        <span>
+
+                            Closed
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                {/* Content */}
+
+                <div className="content-card">
+
+                    {
+
+                        loading &&
+
+                        <p>
+
+                            Loading...
+
+                        </p>
+
+                    }
+
+                    {
+
+                        error &&
+
+                        <div className="error-box">
+
+                            {error}
+
+                        </div>
+
+                    }
+
+                    {
+
+                        tab === "create" &&
+
+                        <CreateRequirement
+                            loadRequirements={loadRequirements}
+                        />
+
+                    }
+
+                    {
+
+                        tab === "requirements" &&
+
+                        <MyRequirements
+                            requirements={requirements}
+                            handleCloseRequirement={handleCloseRequirement}
+                        />
+
+                    }
+
+                </div>
+
+            </main>
+
         </div>
+
     );
+
 }

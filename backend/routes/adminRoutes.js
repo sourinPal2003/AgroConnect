@@ -7,7 +7,8 @@ const {
     verifyUser,
     createCrop,
     getAllCrops,
-    deleteCrop
+    deleteCrop,
+    getVerifiedInspectors
 } = require("../controllers/adminController");
 
 // Get all users
@@ -24,5 +25,12 @@ router.get("/crops", getAllCrops);
 
 // Delete crop
 router.delete("/crops/:cropId", auth, roleCheck(["admin"]), deleteCrop);
+// Get all verified inspectors
+router.get(
+    "/verified-inspectors",
+    auth,
+    roleCheck(["admin"]),
+    getVerifiedInspectors
+);
 
 module.exports = router;
