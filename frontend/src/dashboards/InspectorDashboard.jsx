@@ -187,6 +187,29 @@ const completed =
 
         </div>
 
+                        {
+
+                    !user.isVerified &&
+
+                    <div className="warning-card">
+
+                        <h3>
+
+                            ⚠ Account Verification Pending
+
+                        </h3>
+
+                        <p>
+
+                            Your account is waiting for administrator approval.
+                            You cannot access the inspection management features until your account is verified.
+
+                        </p>
+
+                    </div>
+
+                }
+
         <div className="hero-card">
 
             <h1>
@@ -288,7 +311,7 @@ const completed =
 
         </div>
 
-        <div className="content-card">
+        {user.isVerified &&  <div className="content-card">
 
             {loading && <p>Loading...</p>}
 
@@ -308,7 +331,7 @@ const completed =
 
             />
 
-        </div>
+        </div>}
 
     </main>
 

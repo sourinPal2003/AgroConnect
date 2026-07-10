@@ -53,7 +53,7 @@ const register = async (req, res) => {
 
         // Create JWT token
         const token = jwt.sign(
-            { id: user._id, email: user.email, role: user.role },
+            { id: user._id, email: user.email, role: user.role, isVerified: user.isVerified },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
@@ -96,7 +96,7 @@ const login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user._id, email: user.email, role: user.role },
+            { id: user._id, email: user.email, role: user.role, isVerified: user.isVerified },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
