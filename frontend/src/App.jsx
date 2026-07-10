@@ -9,6 +9,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AssignInspector from './pages/AssignInspector';
+import CreateSellOffer from "./pages/CreateSellOffer";
+import CompleteInspection from "./pages/CompleteInspection";
 
 // Dashboards
 import AdminDashboard from './dashboards/AdminDashboard';
@@ -50,6 +52,14 @@ function App() {
               </ProtectedRoute>
             } 
           />
+          <Route
+    path="/create-offer"
+    element={
+        <ProtectedRoute requiredRole="farmer">
+            <CreateSellOffer />
+        </ProtectedRoute>
+    }
+/>
 
           <Route 
             path="/mill-owner" 
@@ -77,6 +87,14 @@ function App() {
               </ProtectedRoute>
             } 
           />
+          <Route
+    path="/inspection/:inspectionId"
+    element={
+        <ProtectedRoute requiredRole="inspector">
+            <CompleteInspection />
+        </ProtectedRoute>
+    }
+/>
 
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>

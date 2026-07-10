@@ -42,7 +42,11 @@ const inspectionSchema = new mongoose.Schema({
         type: String,
         enum: ["pending", "accept", "reject"],
         default: "pending"
-    }
+    },
+    rejectReason:{
+    type:String,
+    default:""
+},
 
 }, { timestamps: true });
 

@@ -1,8 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { assignInspection, getAllUsers } from "../services/api";
-import "../App.css";
+import {
+    assignInspection,
+    getVerifiedInspectors
+} from "../services/api";
+import "./AssignInspector.css";
 
 export default function AssignInspectorPage() {
     const { user } = useContext(AuthContext);
@@ -20,83 +23,209 @@ export default function AssignInspectorPage() {
     }, []);
 
     const loadInspectors = async () => {
-        try {
-            const response = await getAllUsers();
 
-            const inspectorList = response.data.filter(
-                (u) => u.role === "inspector" && u.isVerified
-            );
+    try {
 
-            setInspectors(inspectorList);
-        } catch (err) {
-            setError("Failed to load inspectors");
-        }
-    };
+        const response = await getVerifiedInspectors();
+
+        console.log(response.data);
+
+        setInspectors(response.data);
+
+    }
+
+    catch(err){
+
+        console.log(err.response);
+
+        setError(
+
+            err.response?.data?.error ||
+
+            "Failed to load inspectors"
+
+        );
+
+    }
+
+};
 
     const handleAssign = async () => {
-        if (!selectedInspector) {
-            setError("Please select an inspector");
-            return;
-        }
 
-        try {
-            setLoading(true);
+    if (!selectedInspector) {
 
-            await assignInspection({
-                offerId,
-                inspectorId: selectedInspector,
-            });
+        setError("Please select an inspector");
 
-            alert("Inspector assigned successfully!");
+        return;
 
-            navigate("/admin");
-        } catch (err) {
-            setError(err.response?.data?.error || "Failed to assign inspector");
-        } finally {
-            setLoading(false);
-        }
-    };
+    }
 
+    try {
+
+        setLoading(true);
+
+        setError("");
+
+       await assignInspection({
+
+    offerId,
+
+    inspectorId:selectedInspector
+
+});
+
+        alert("Inspector assigned successfully!");
+
+        navigate("/admin");
+
+    }
+
+    catch(err){
+
+        setError(
+
+            err.response?.data?.error ||
+
+            "Failed to assign inspector"
+
+        );
+
+    }
+
+    finally{
+
+        setLoading(false);
+
+    }
+
+};
     return (
-        <div className="auth-container">
-            <div className="auth-box">
+    <div className="assign-modal-overlay">
+
+        <div className="assign-modal">
+
+            <div className="assign-header">
+
                 <h2>Assign Inspector</h2>
 
-                {error && <div className="error-message">{error}</div>}
+                <p>
+                    Assign a verified inspector to inspect this transaction.
+                </p>
 
-                <div className="form-group">
-                    <label>Select Inspector:</label>
+            </div>
+
+            {
+                error && (
+
+                    <div className="assign-error">
+
+                        ⚠ {error}
+
+                    </div>
+
+                )
+            }
+
+            <div className="assign-body">
+
+                <label>
+
+                    Verified Inspector
+
+                </label>
+
+                <div className="assign-select-box">
 
                     <select
+
                         value={selectedInspector}
-                        onChange={(e) => setSelectedInspector(e.target.value)}
-                    >
-                        <option value="">Choose an inspector</option>
 
-                        {inspectors.map((inspector) => (
-                            <option
-                                key={inspector._id}
-                                value={inspector._id}
-                            >
-                                {inspector.name} ({inspector.email})
-                            </option>
-                        ))}
+                        onChange={(e) =>
+                            setSelectedInspector(e.target.value)
+                        }
+
+                    >
+
+                        <option value="">
+                            Select Verified Inspector
+                        </option>
+
+                        {
+                            inspectors.map((inspector) => (
+
+                                <option
+
+                                    key={inspector._id}
+
+                                    value={inspector._id}
+
+                                >
+
+                                    {inspector.name}
+
+                                </option>
+
+                            ))
+                        }
+
                     </select>
+
                 </div>
 
-                <div style={{ marginTop: "20px" }}>
-                    <button onClick={handleAssign} disabled={loading}>
-                        {loading ? "Assigning..." : "Assign Inspector"}
-                    </button>
+                <p className="assign-note">
 
-                    <button
-                        onClick={() => navigate("/admin")}
-                        style={{ marginLeft: "10px" }}
-                    >
-                        Cancel
-                    </button>
-                </div>
+                    Only verified inspectors are available for assignment.
+
+                </p>
+
             </div>
+
+            <div className="assign-footer">
+
+               <button
+
+    className="cancel-btn"
+
+    onClick={() => navigate("/admin")}
+
+    disabled={loading}
+
+>
+
+    Cancel
+
+</button>
+
+                <button
+
+                    className="assign-btn"
+
+                    onClick={handleAssign}
+
+                    disabled={loading || !selectedInspector}
+
+                >
+
+                    {
+
+                        loading
+
+                        ?
+
+                        "Assigning..."
+
+                        :
+
+                        "Assign Inspector"
+
+                    }
+
+                </button>
+
+            </div>
+
         </div>
-    );
+
+    </div>
+);
 }

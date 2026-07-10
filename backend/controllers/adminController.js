@@ -68,10 +68,40 @@ const deleteCrop = async (req, res) => {
     }
 };
 
+const getVerifiedInspectors=async(req,res)=>{
+
+    try{
+
+        const inspectors=await User.find({
+
+            role:"inspector",
+
+            isVerified:true
+
+        }).select("name email");
+
+        res.json(inspectors);
+
+    }
+
+    catch(err){
+
+        res.status(500).json({
+
+            error:err.message
+
+        });
+
+    }
+
+};
+
+
 module.exports = {
     getAllUsers,
     verifyUser,
     createCrop,
     getAllCrops,
-    deleteCrop
+    deleteCrop,
+    getVerifiedInspectors
 };

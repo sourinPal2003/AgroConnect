@@ -20,5 +20,4 @@ router.get("/all-pending", auth, roleCheck(["admin"]), getAllPendingOffers);
 
 // Get offer details
 router.get("/:offerId", auth, getOfferDetails);
-
 module.exports = router;

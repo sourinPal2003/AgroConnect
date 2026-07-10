@@ -1,195 +1,463 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { AuthContext } from "../context/AuthContext";
+
 import {
     getAllActiveRequirements,
-    createSellOffer,
     getMyOffers
 } from "../services/api";
-import "../App.css";
+
+import AvailableRequirements from "../components/farmer/AvailableRequirements";
+import MySellOffers from "../components/farmer/MySellOffers";
+
+import {
+    FaLeaf,
+    FaBars,
+    FaTimes,
+    FaClipboardList,
+    FaShoppingBasket,
+    FaBell,
+    FaUserCircle,
+    FaSignOutAlt,
+    FaChartBar
+} from "react-icons/fa";
+
+import "../styles/Dashboard.css";
 
 export default function FarmerDashboard() {
+
     const { user, logout } = useContext(AuthContext);
+
     const navigate = useNavigate();
 
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+
     const [tab, setTab] = useState("requirements");
+
     const [requirements, setRequirements] = useState([]);
+
     const [offers, setOffers] = useState([]);
+
     const [loading, setLoading] = useState(false);
+
     const [error, setError] = useState("");
-    const [selectedReq, setSelectedReq] = useState(null);
-    const [quantityToSell, setQuantityToSell] = useState("");
 
     useEffect(() => {
-        if (!user || user.role !== "farmer") {
+
+        if (!user) {
+
             navigate("/login");
+
+            return;
+
         }
-    }, [user, navigate]);
 
-    useEffect(() => {
-        if (tab === "requirements") loadRequirements();
-        if (tab === "my-offers") loadOffers();
-    }, [tab]);
+        loadRequirements();
 
+        loadOffers();
+
+    }, []);
+    const handleCreateOffer = (requirement) => {
+
+    navigate("/create-offer", {
+
+        state: {
+
+            requirement
+
+        }
+
+    });
+
+};
     const loadRequirements = async () => {
-        try {
+
+        try{
+
             setLoading(true);
+
             const response = await getAllActiveRequirements();
+
             setRequirements(response.data);
-        } catch (err) {
-            setError("Failed to load requirements");
-        } finally {
-            setLoading(false);
+
         }
+
+        catch{
+
+            setError("Failed to load requirements");
+
+        }
+
+        finally{
+
+            setLoading(false);
+
+        }
+
     };
 
     const loadOffers = async () => {
-        try {
-            setLoading(true);
+
+        try{
+
             const response = await getMyOffers();
+
             setOffers(response.data);
-        } catch (err) {
+
+        }
+
+        catch{
+
             setError("Failed to load offers");
-        } finally {
-            setLoading(false);
+
         }
-    };
 
-    const handleMakeDeal = async (requirementId) => {
-        try {
-            if (!quantityToSell || quantityToSell <= 0) {
-                setError("Please enter a valid quantity");
-                return;
-            }
-
-            const response = await createSellOffer({
-                requirementId,
-                approxQuantitySell: parseFloat(quantityToSell)
-            });
-
-            setError("");
-            alert(`Offer created successfully! Your OTP is: ${response.data.otp}`);
-            setQuantityToSell("");
-            setSelectedReq(null);
-            loadOffers();
-            setTab("my-offers");
-        } catch (err) {
-            setError(err.response?.data?.error || "Failed to create offer");
-        }
     };
 
     const handleLogout = () => {
+
         logout();
+
         navigate("/login");
+
     };
 
-    return (
-        <div className="dashboard-container">
-            <div className="navbar">
-                <h1>AgroConnect - Farmer Dashboard</h1>
-                <button onClick={handleLogout} className="logout-btn">Logout</button>
+    if(!user){
+
+        return <div className="loading-screen">Loading...</div>;
+
+    }
+
+    return(
+
+<div className="farmer-page">
+
+    {/* Sidebar */}
+
+    <aside className={`sidebar ${sidebarOpen ? "open" : "collapsed"}`}>
+
+        <div className="sidebar-header">
+
+            <div className="logo">
+
+                <FaLeaf/>
+
+                {sidebarOpen && <span>AgroConnect</span>}
+
             </div>
 
-            <div className="tabs">
-                <button onClick={() => setTab("requirements")} className={tab === "requirements" ? "active" : ""}>
-                    Available Requirements
-                </button>
-                <button onClick={() => setTab("my-offers")} className={tab === "my-offers" ? "active" : ""}>
-                    My Sell Offers
-                </button>
-            </div>
+            <button
+                className="menu-btn"
+                onClick={()=>setSidebarOpen(!sidebarOpen)}
+            >
 
-            <div className="tab-content">
-                {error && <div className="error-message">{error}</div>}
-                {loading && <p>Loading...</p>}
+                {
 
-                {tab === "requirements" && (
-                    <div>
-                        <h3>Available Mill Requirements</h3>
-                        {requirements.length === 0 ? (
-                            <p>No active requirements available</p>
-                        ) : (
-                            <div className="requirements-list">
-                                {requirements.map((req) => (
-                                    <div key={req._id} className="requirement-card">
-                                        <p><strong>Mill:</strong> {req.millOwnerId?.millName}</p>
-                                        <p><strong>Location:</strong> {req.millOwnerId?.millLocation}</p>
-                                        <p><strong>Crop:</strong> {req.cropId?.name}</p>
-                                        <p><strong>Required Quantity:</strong> {req.requiredTotalQuantity} units</p>
-                                        <p><strong>Expected Rate:</strong> ${req.expectedRate}/unit</p>
+                    sidebarOpen ?
 
-                                        {selectedReq === req._id ? (
-                                            <div style={{ marginTop: "10px", padding: "10px", backgroundColor: "#f0f0f0", borderRadius: "5px" }}>
-                                                <input
-                                                    type="number"
-                                                    placeholder="Enter quantity to sell"
-                                                    value={quantityToSell}
-                                                    onChange={(e) => setQuantityToSell(e.target.value)}
-                                                    max={req.requiredTotalQuantity}
-                                                    required
-                                                />
-                                                <div style={{ marginTop: "10px" }}>
-                                                    <button
-                                                        onClick={() => handleMakeDeal(req._id)}
-                                                        className="action-btn"
-                                                    >
-                                                        Confirm Sell Offer
-                                                    </button>
-                                                    <button
-                                                        onClick={() => setSelectedReq(null)}
-                                                        className="delete-btn"
-                                                        style={{ marginLeft: "10px" }}
-                                                    >
-                                                        Cancel
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <button
-                                                onClick={() => setSelectedReq(req._id)}
-                                                className="action-btn"
-                                            >
-                                                Make Deal
-                                            </button>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )}
+                    <FaTimes/>
 
-                {tab === "my-offers" && (
-                    <div>
-                        <h3>My Sell Offers</h3>
-                        {offers.length === 0 ? (
-                            <p>No offers created yet</p>
-                        ) : (
-                            <div className="offers-list">
-                                {offers.map((offer) => (
-                                    <div key={offer._id} className="offer-card">
-                                        <p><strong>Mill:</strong> {offer.requirementId?.millOwnerId?.millName}</p>
-                                        <p><strong>Crop:</strong> {offer.requirementId?.cropId?.name}</p>
-                                        <p><strong>Quantity Selling:</strong> {offer.approxQuantitySell} units</p>
-                                        <p><strong>Expected Rate:</strong> ${offer.requirementId?.expectedRate}/unit</p>
-                                        <p><strong>Estimated Amount:</strong> ${offer.approxQuantitySell * offer.requirementId?.expectedRate}</p>
-                                        <p><strong>Status:</strong> <span style={{
-                                            color: offer.status === "pending" ? "orange" :
-                                                offer.status === "accept" ? "green" :
-                                                    offer.status === "reject" ? "red" : "blue"
-                                        }}>{offer.status.toUpperCase()}</span></p>
-                                        {offer.status === "assignedToInspector" && (
-                                            <p style={{ fontSize: "12px", color: "red" }}>
-                                                Your OTP: {offer.otp} (Keep it safe - you'll need it for inspection)
-                                            </p>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+                    :
+
+                    <FaBars/>
+
+                }
+
+            </button>
+
         </div>
+
+        <nav>
+
+            <button
+
+                className={tab==="requirements" ? "active" : ""}
+
+                onClick={()=>setTab("requirements")}
+
+            >
+
+                <FaClipboardList/>
+
+                {
+
+                    sidebarOpen &&
+
+                    <span>
+
+                        Requirements
+
+                    </span>
+
+                }
+
+            </button>
+
+            <button
+
+                className={tab==="offers" ? "active" : ""}
+
+                onClick={()=>setTab("offers")}
+
+            >
+
+                <FaShoppingBasket/>
+
+                {
+
+                    sidebarOpen &&
+
+                    <span>
+
+                        My Offers
+
+                    </span>
+
+                }
+
+            </button>
+
+        </nav>
+
+        <button
+
+            className="logout-side"
+
+            onClick={handleLogout}
+
+        >
+
+            <FaSignOutAlt/>
+
+            {
+
+                sidebarOpen &&
+
+                <span>
+
+                    Logout
+
+                </span>
+
+            }
+
+        </button>
+
+    </aside>
+
+    {/* Main */}
+
+    <main className="main-content">
+
+        {/* Topbar */}
+
+        <div className="topbar">
+
+            <h2 className="page-title">
+
+                Farmer Dashboard
+
+            </h2>
+
+            <div className="top-right">
+
+                <FaBell className="bell"/>
+
+                <div className="profile">
+
+                    <FaUserCircle/>
+
+                    <span>
+
+                        {user.name}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {/* Hero */}
+
+        <div className="hero-card">
+
+            <h1>
+
+                Welcome Back,
+
+                {" "}
+
+                {user.name}
+
+                🌾
+
+            </h1>
+
+            <p>
+
+                Manage crop requirements and monitor your offers.
+
+            </p>
+
+        </div>
+
+        {/* Statistics */}
+
+        <div className="stats">
+
+            <div className="stat-card">
+
+                <FaClipboardList/>
+
+                <h2>
+
+                    {requirements.length}
+
+                </h2>
+
+                <span>
+
+                    Active Requirements
+
+                </span>
+
+            </div>
+
+            <div className="stat-card">
+
+                <FaShoppingBasket/>
+
+                <h2>
+
+                    {offers.length}
+
+                </h2>
+
+                <span>
+
+                    Total Offers
+
+                </span>
+
+            </div>
+
+            <div className="stat-card">
+
+                <FaChartBar/>
+
+                <h2>
+
+                    {
+
+                        offers.filter(
+
+                            o=>o.status==="approved"
+
+                        ).length
+
+                    }
+
+                </h2>
+
+                <span>
+
+                    Approved
+
+                </span>
+
+            </div>
+
+            <div className="stat-card">
+
+                <FaLeaf/>
+
+                <h2>
+
+                    {
+
+                        offers.filter(
+
+                            o=>o.status==="pending"
+
+                        ).length
+
+                    }
+
+                </h2>
+
+                <span>
+
+                    Pending
+
+                </span>
+
+            </div>
+
+        </div>
+
+        {/* Content */}
+
+        <div className="content-card">
+
+            {
+
+                loading &&
+
+                <p>
+
+                    Loading...
+
+                </p>
+
+            }
+
+            {
+
+                error &&
+
+                <div className="error-box">
+
+                    {error}
+
+                </div>
+
+            }
+
+            {
+
+                tab==="requirements" &&
+
+                <AvailableRequirements
+
+                    requirements={requirements}
+
+                     handleCreateOffer={handleCreateOffer}
+
+                />
+
+            }
+
+            {
+
+                tab==="offers" &&
+
+                <MySellOffers
+
+                    offers={offers}
+
+                />
+
+            }
+
+        </div>
+
+    </main>
+
+</div>
+
     );
+
 }

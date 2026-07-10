@@ -1,0 +1,450 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body,
+#root{
+    width:100%;
+    min-height:100vh;
+    font-family:'Poppins',sans-serif;
+    background:#F8FAFC;
+}
+
+/* ===========================
+   PAGE LAYOUT
+=========================== */
+
+.register-page{
+    display:flex;
+    min-height:100vh;
+    width:100%;
+}
+
+/* ===========================
+   LEFT PANEL
+=========================== */
+
+.left-panel{
+    flex:1;
+
+    background:
+    linear-gradient(
+        rgba(10,30,15,.72),
+        rgba(15,50,20,.72)
+    ),
+    url("https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1500&q=80");
+
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:60px;
+}
+
+.brand{
+    max-width:520px;
+    color:white;
+}
+
+.brand-icon{
+    font-size:70px;
+    color:#4ADE80;
+    margin-bottom:20px;
+}
+
+.brand h1{
+    font-size:58px;
+    margin-bottom:18px;
+    font-weight:700;
+}
+
+.brand p{
+    font-size:20px;
+    line-height:1.8;
+    opacity:.95;
+}
+
+/* ===========================
+   RIGHT PANEL
+=========================== */
+
+.right-panel{
+    flex:1;
+
+    background:#F8FAFC;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:30px;
+}
+
+/* ===========================
+   REGISTER CARD
+=========================== */
+
+.register-card{
+
+    width:100%;
+    max-width:650px;
+
+    background:white;
+
+    border-radius:24px;
+
+    padding-top:100px;
+    padding-right:30px;
+    padding-bottom:45px;
+    padding-left:40px;
+
+    box-shadow:
+    0 20px 60px rgba(0,0,0,.08);
+
+}
+
+.register-card h2{
+
+    color:#1E293B;
+
+    font-size:34px;
+
+    margin-bottom:8px;
+
+}
+
+.register-card > span{
+
+    display:block;
+
+    color:#64748B;
+
+    margin-bottom:30px;
+
+}
+
+/* ===========================
+   ERROR
+=========================== */
+
+.error-box{
+
+    background:#FEE2E2;
+
+    color:#B91C1C;
+
+    padding:14px;
+
+    border-left:5px solid #EF4444;
+
+    border-radius:12px;
+
+    margin-bottom:25px;
+
+}
+
+/* ===========================
+   FORM GRID
+=========================== */
+
+.register-form{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:18px;
+
+}
+
+/* ===========================
+   INPUT BOX
+=========================== */
+
+.input-box{
+
+    display:flex;
+
+    align-items:center;
+
+    background:#F8FAFC;
+
+    border:1px solid #CBD5E1;
+
+    border-radius:14px;
+
+    padding:15px;
+
+    transition:.3s;
+
+}
+
+.input-box:focus-within{
+
+    border-color:#22C55E;
+
+    box-shadow:
+    0 0 0 4px rgba(34,197,94,.18);
+
+}
+
+.icon{
+
+    color:#22C55E;
+
+    font-size:18px;
+
+    min-width:20px;
+
+}
+
+.input-box input,
+.input-box select{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    background:none;
+
+    font-size:15px;
+
+    margin-left:12px;
+
+    color:#1E293B;
+
+}
+
+.input-box input::placeholder{
+
+    color:#94A3B8;
+
+}
+
+.input-box select{
+
+    cursor:pointer;
+
+}
+
+/* ===========================
+   PASSWORD EYE
+=========================== */
+
+.eye{
+
+    cursor:pointer;
+
+    color:#64748B;
+
+    transition:.3s;
+
+}
+
+.eye:hover{
+
+    color:#22C55E;
+
+}
+
+/* ===========================
+   MILL DETAILS
+=========================== */
+
+.mill-section{
+
+    grid-column:1/-1;
+
+    background:#F8FAFC;
+
+    padding:22px;
+
+    border-radius:18px;
+
+    border:1px solid #E2E8F0;
+
+}
+
+.mill-section h3{
+
+    color:#166534;
+
+    margin-bottom:18px;
+
+    font-size:20px;
+
+}
+
+.mill-section .input-box{
+
+    margin-bottom:15px;
+
+}
+
+.mill-section .input-box:last-child{
+
+    margin-bottom:0;
+
+}
+
+/* ===========================
+   BUTTON
+=========================== */
+
+.register-btn{
+
+    grid-column:1/-1;
+
+    margin-top:10px;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:linear-gradient(
+        135deg,
+        #22C55E,
+        #16A34A
+    );
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+}
+
+.register-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 12px 28px rgba(34,197,94,.35);
+
+}
+
+.register-btn:disabled{
+
+    opacity:.7;
+
+    cursor:not-allowed;
+
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+.bottom-text{
+
+    margin-top:28px;
+
+    text-align:center;
+
+    color:#64748B;
+
+    font-size:15px;
+
+}
+
+.bottom-text a{
+
+    margin-left:8px;
+
+    color:#22C55E;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
+.bottom-text a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .left-panel{
+        display:none;
+    }
+
+    .right-panel{
+        width:100%;
+        padding:20px;
+    }
+
+    .register-card{
+        max-width:700px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .register-form{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .register-btn{
+
+        grid-column:auto;
+
+    }
+
+    .mill-section{
+
+        grid-column:auto;
+
+    }
+
+}
+
+@media(max-width:480px){
+
+    .register-card{
+
+        padding:30px 24px;
+
+        border-radius:18px;
+
+    }
+
+    .register-card h2{
+
+        font-size:28px;
+
+    }
+
+    .brand h1{
+
+        font-size:48px;
+
+    }
+
+}
