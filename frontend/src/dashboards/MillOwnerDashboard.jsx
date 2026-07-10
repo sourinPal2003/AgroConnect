@@ -178,7 +178,7 @@ export default function MillOwnerDashboard() {
 
                 <nav>
 
-                    <button
+                    {user.isVerified && <button
                         className={tab === "create" ? "active" : ""}
                         onClick={() => setTab("create")}
                     >
@@ -187,7 +187,7 @@ export default function MillOwnerDashboard() {
 
                         {sidebarOpen && <span>Create Requirement</span>}
 
-                    </button>
+                    </button>}
 
                     <button
                         className={tab === "requirements" ? "active" : ""}
@@ -370,7 +370,7 @@ export default function MillOwnerDashboard() {
 
                 {/* Content */}
 
-                <div className="content-card">
+                {user.isVerified && <div className="content-card">
 
                     {
 
@@ -417,7 +417,7 @@ export default function MillOwnerDashboard() {
 
                     }
 
-                </div>
+                </div>}
 
             </main>
 
