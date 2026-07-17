@@ -5,6 +5,7 @@ const initializeAdmin = async () => {
     try {
         const adminEmail = process.env.ADMIN_EMAIL;
         const adminPassword = process.env.ADMIN_PASSWORD;
+        const adminphone = process.env.ADMIN_PHONE;
 
         // Check if admin already exists
         const existingAdmin = await User.findOne({ email: adminEmail });
@@ -22,7 +23,7 @@ const initializeAdmin = async () => {
         const admin = new User({
             name: "Admin",
             email: adminEmail,
-            phone: "0000000000",
+            phone: adminphone,
             address: "Admin Address",
             password: hashedPassword,
             role: "admin",
