@@ -8,8 +8,8 @@ import {
     updateRequirementStatus
 } from "../services/api";
 
-import CreateRequirement from "../components/millOwner/CreateRequirement";
-import MyRequirements from "../components/millOwner/MyRequirements";
+import CreateRequirement from "../components/millowner/CreateRequirement";
+import MyRequirements from "../components/millowner/MyRequirements";
 
 import {
     FaLeaf,
