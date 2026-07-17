@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 });
 
 // Initialize admin on startup
-initializeAdmin();
+//initializeAdmin();
 
 const PORT = process.env.PORT || 5000;
 
